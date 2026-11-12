@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 Слайд-шоу Студія</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="app">
+        <header>
+            <h1><span>🎬</span> Слайд-шоу Студія</h1>
+            <p class="subhead">Фото + музика → відео. Легко, швидко, без реєстрації.</p>
+        </header>
+
+        <div class="grid">
+            <div class="col">
+                <section class="card">
+                    <h2><i>🖼️</i> Фотографії</h2>
+                    <div class="preview-area" id="previewArea">
+                        <div class="preview-placeholder">Додайте фото, щоб побачити прев'ю</div>
+                    </div>
+
+                    <div class="flex-row">
+                        <label class="btn btn-primary" style="cursor: pointer;">
+                            <span>+</span> Додати фото
+                            <input type="file" id="photoInput" accept="image/*" multiple class="hidden-file">
+                        </label>
+                        <button class="btn btn-small" id="clearPhotosBtn">🗑️ Очистити</button>
+                    </div>
+
+                    <div class="photo-list" id="photoList"></div>
+                </section>
+
+                <section class="card">
+                    <h2><i>✨</i> Ефекти переходів</h2>
+                    <div class="settings-group">
+                        <label class="setting-row">
+                            <span>Тип переходу:</span>
+                            <select id="transitionType">
+                                <option value="fade">Плавне зникнення (Fade)</option>
+                                <option value="slide-left">Зсув вліво</option>
+                                <option value="slide-right">Зсув вправо</option>
+                                <option value="zoom-in">Наближення (Zoom In)</option>
+                                <option value="zoom-out">Віддалення (Zoom Out)</option>
+                                <option value="none">Без переходу</option>
+                            </select>
+                        </label>
+                        <label class="setting-row">
+                            <span>Тривалість переходу:</span>
+                            <input type="range" id="transitionDuration" min="0" max="2" step="0.1" value="0.6">
+                            <span class="range-value" id="transitionDurationVal">0.6 с</span>
+                        </label>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h2><i>⚙️</i> Параметри відео</h2>
+                    <div class="settings-group">
+                        <label class="setting-row">
+                            <span>Роздільна здатність:</span>
+                            <select id="videoResolution">
+                                <option value="1280x720">1280 × 720 (HD)</option>
+                                <option value="1920x1080" selected>1920 × 1080 (Full HD)</option>
+                                <option value="854x480">854 × 480 (SD)</option>
+                            </select>
+                        </label>
+                        <label class="setting-row">
+                            <span>Частота кадрів (FPS):</span>
+                            <select id="videoFps">
+                                <option value="24">24</option>
+                                <option value="30" selected>30</option>
+                                <option value="60">60</option>
+                            </select>
+                        </label>
+                        <label class="setting-row">
+                            <span>Формат:</span>
+                            <select id="videoFormat">
+                                <option value="auto">Авто (MP4 / WebM)</option>
+                                <option value="mp4">MP4</option>
+                                <option value="webm">WebM</option>
+                            </select>
+                        </label>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col">
+                <section class="card">
+                    <h2><i>🎵</i> Музика</h2>
+                    <div class="music-controls">
+                        <div class="music-input-group">
+                            <input type="text" id="musicUrlInput" placeholder="Вставте посилання на MP3...">
+                            <button class="btn btn-small" id="loadUrlBtn">Завантажити</button>
+                        </div>
+                        <div class="flex-row">
+                            <label class="file-label">
+                                📁 Обрати файл
+                                <input type="file" id="musicFileInput" accept="audio/*" class="hidden-file">
+                            </label>
+                            <span class="status-msg" id="musicStatus">Файл не вибрано</span>
+                        </div>
+                        <audio id="audioPlayer" controls style="width:100%; display: none;"></audio>
+
+                        <div class="waveform-container" id="waveformContainer" style="display: none;">
+                            <canvas id="waveformCanvas" height="80"></canvas>
+                        </div>
+
+                        <div class="trim-section" id="trimSection" style="display: none;">
+                            <h3>✂️ Обрізати фрагмент</h3>
+                            <div class="range-wrap">
+                                <label>Від</label>
+                                <input type="range" id="trimStart" min="0" max="100" value="0" step="0.1">
+                                <span class="range-value" id="trimStartVal">0.0 с</span>
+                            </div>
+                            <div class="range-wrap">
+                                <label>До</label>
+                                <input type="range" id="trimEnd" min="0" max="100" value="100" step="0.1">
+                                <span class="range-value" id="trimEndVal">0.0 с</span>
+                            </div>
+                            <div class="trim-info">
+                                <span>Фрагмент: <strong id="trimDuration">0.0 с</strong></span>
+                                <span id="audioTotalDuration">Тривалість: 0.0 с</span>
+                            </div>
+                            <div class="flex-row mt-8">
+                                <button class="btn btn-small" id="previewAudioBtn">▶ Прослухати фрагмент</button>
+                                <button class="btn btn-small" id="stopAudioPreviewBtn" style="display:none;">⏹ Стоп</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h2><i>👁️</i> Попередній перегляд</h2>
+                    <div class="preview-video-area">
+                        <canvas id="previewCanvas" width="480" height="270"></canvas>
+                    </div>
+                    <div class="flex-row mt-8">
+                        <button class="btn btn-primary" id="playPreviewBtn" disabled>▶ Відтворити прев'ю</button>
+                        <button class="btn" id="stopPreviewBtn" style="display:none;">⏹ Зупинити</button>
+                    </div>
+                    <div class="status-msg mt-8" id="previewStatus">Додайте фото та музику.</div>
+                </section>
+
+                <section class="card">
+                    <h2><i>📥</i> Експорт відео</h2>
+                    <div class="flex-row">
+                        <button class="btn btn-primary" id="exportBtn" disabled>Створити відео</button>
+                        <button class="btn" id="stopExportBtn" style="display: none;">Зупинити</button>
+                    </div>
+                    <div class="export-progress" id="exportProgress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div class="progress-text" id="progressText">0%</div>
+                    </div>
+                    <div class="status-msg mt-16" id="exportStatus">Додайте фото та музику, щоб активувати експорт.</div>
+                    <div class="mt-8" id="downloadContainer"></div>
+                </section>
+            </div>
+        </div>
+
+        <footer>
+            <p>Створено з ❤️ для GitHub Pages. Працює повністю у браузері.</p>
+        </footer>
+    </div>
+    <script type="module" src="./js/main.js"></script>
+</body>
+</html>
